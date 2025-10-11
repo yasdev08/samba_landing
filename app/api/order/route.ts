@@ -1,9 +1,6 @@
 /* import { google } from "googleapis"; */
 import { NextResponse } from "next/server";
 
-// Run on edge for faster response (optional)
-export const runtime = "nodejs";
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -71,7 +68,7 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           chat_id: chatId,
           text: message,
-          parse_mode: "Markdown",
+          parse_mode: "HTML",
         }),
       }
     );
