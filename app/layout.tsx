@@ -15,7 +15,7 @@ const playfair = Playfair_Display({
   weight: ["400", "500", "600", "700"],
 })
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Chaussura - Adidas Samba",
   description: "Commandez vos Adidas Samba à petit prix en Algérie 🇩🇿",
   icons: {

@@ -47,7 +47,7 @@ export default function ThankYou() {
             href="/"
             className="px-8 py-4 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors"
           >
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Link>
           <a
             href="https://wa.me/213794120959"

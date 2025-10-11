@@ -105,7 +105,7 @@ export default function Home() {
             </h1>
 
             <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground font-light mb-8 text-pretty leading-relaxed">
-              L'élégance rétro rencontre le confort moderne. Une icône intemporelle pour votre style quotidien.
+              L&apos;élégance rétro rencontre le confort moderne. Une icône intemporelle pour votre style quotidien.
             </p>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-8 p-4 sm:p-6 bg-muted/50 rounded-2xl border border-border">
@@ -381,7 +381,7 @@ export default function Home() {
                     </span>
                   )}
                 </div>
-                <p className="text-foreground/90 mb-6 leading-relaxed">"{review.text}"</p>
+                <p className="text-foreground/90 mb-6 leading-relaxed">&quot;{review.text}&quot;</p>
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center font-bold text-lg text-secondary">
                     {review.name.charAt(0)}

@@ -1,4 +1,4 @@
-import { google } from "googleapis";
+/* import { google } from "googleapis"; */
 import { NextResponse } from "next/server";
 
 // Run on edge for faster response (optional)
@@ -35,8 +35,8 @@ export async function POST(req: Request) {
 
     // ✅ Prepare data row
     const timestamp = new Date().toLocaleString();
-    const values = [[name, phone, wilaya, baladiya, pointure, timestamp]];
-
+/*     const values = [[name, phone, wilaya, baladiya, pointure, timestamp]];
+ */
     // 🚀 Add row to Google Sheet (non-blocking)
    /*  const sheetsPromise = sheets.spreadsheets.values.append({
       spreadsheetId,
