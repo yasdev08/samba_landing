@@ -17,6 +17,8 @@ export async function POST(req: Request) {
       );
     }
 
+    
+
     // 📞 Validate phone format (must start with 05 + 8 digits)
     
 
@@ -48,6 +50,9 @@ export async function POST(req: Request) {
     // 📩 Send Telegram notification (non-blocking)
     const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN!;
     const chatId = process.env.TELEGRAM_CHAT_ID!;
+    console.log("Sending Telegram message to:", chatId);
+    console.log("Bot token starts with:", telegramBotToken?.slice(0, 10));
+
     const message = `
 📦 *Nouvelle commande reçue !*
 👤 Nom : ${name}
