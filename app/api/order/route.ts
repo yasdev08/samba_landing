@@ -1,5 +1,7 @@
-/* import { google } from "googleapis"; */
 import { NextResponse } from "next/server";
+
+// Use Node.js runtime (not edge)
+export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   try {
@@ -14,53 +16,31 @@ export async function POST(req: Request) {
       );
     }
 
-    
+ 
 
-    // 📞 Validate phone format (must start with 05 + 8 digits)
-    
-
-    // 🟢 Parse Google credentials from env
-    /* const credentials = JSON.parse(
-      process.env.GOOGLE_SERVICE_ACCOUNT_JSON || "{}"
-    );
-
-    const auth = new google.auth.GoogleAuth({
-      credentials,
-      scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-    });
-
-    const sheets = google.sheets({ version: "v4", auth });
-    const spreadsheetId = process.env.GOOGLE_SHEET_ID; */
-
-    // ✅ Prepare data row
+    // 🕒 Timestamp (Algerian time)
     const timestamp = new Date().toLocaleString();
-/*     const values = [[name, phone, wilaya, baladiya, pointure, timestamp]];
- */
-    // 🚀 Add row to Google Sheet (non-blocking)
-   /*  const sheetsPromise = sheets.spreadsheets.values.append({
-      spreadsheetId,
-      range: "Sheet1!A:F",
-      valueInputOption: "USER_ENTERED",
-      requestBody: { values },
-    });
- */
-    // 📩 Send Telegram notification (non-blocking)
+
+    // 📩 Telegram notification
     const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN!;
     const chatId = process.env.TELEGRAM_CHAT_ID!;
-    console.log("Sending Telegram message to:", chatId);
-    console.log("Bot token starts with:", telegramBotToken?.slice(0, 10));
-
     const message = `
-📦 *Nouvelle commande reçue !*
-👤 Nom : ${name}
-📞 Téléphone : ${phone}
-📍 Wilaya : ${wilaya}
-🏠 Baladiya : ${baladiya}
-👟 Pointure : ${pointure}
-🕒 ${timestamp}
+<b>📦 Nouvelle commande reçue !</b>
+
+👤 <b>Nom :</b> ${name}
+📞 <b>Téléphone :</b> ${phone}
+📍 <b>Wilaya :</b> ${wilaya}
+🏠 <b>Baladiya :</b> ${baladiya}
+👟 <b>Pointure :</b> ${pointure}
+
+🕒 <b>${timestamp}</b>
 `;
 
-    const telegramPromise = fetch(
+    console.log("📨 Sending Telegram message to:", chatId);
+    console.log("🪪 Bot token starts with:", telegramBotToken?.slice(0, 10));
+
+    // ✅ Send Telegram message and wait for the response
+    const res = await fetch(
       `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
       {
         method: "POST",
@@ -68,20 +48,29 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           chat_id: chatId,
           text: message,
-          parse_mode: "HTML",
+          parse_mode: "HTML", // safer than Markdown
         }),
       }
     );
 
-    // ✅ Run both async tasks but respond immediately
-    Promise.allSettled([/* sheetsPromise,  */telegramPromise]).catch(console.error);
+    const data = await res.json();
+    console.log("🤖 Telegram API response:", data);
 
+    if (!data.ok) {
+      console.error("❌ Telegram error:", data.description);
+      return NextResponse.json(
+        { success: false, message: "Erreur Telegram." },
+        { status: 500 }
+      );
+    }
+
+    // ✅ Return immediately when Telegram confirms success
     return NextResponse.json({
       success: true,
       message: "Commande reçue avec succès ✅",
     });
   } catch (error) {
-    console.error("❌ Erreur:", error);
+    console.error("💥 Erreur serveur:", error);
     return NextResponse.json(
       { success: false, message: "Erreur serveur." },
       { status: 500 }
