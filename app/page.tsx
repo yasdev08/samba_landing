@@ -416,7 +416,7 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <OrderForm />
+          <OrderForm product="Adidas samba OG femme"/>
 
           <motion.div
             initial={{ opacity: 0 }}

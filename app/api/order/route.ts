@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     recentRequests.set(ip, now);
 
     const body = await req.json();
-    const { name, phone, wilaya, baladiya, pointure, honeypot } = body;
+    const {product, name, phone, wilaya, baladiya, pointure, honeypot } = body;
 
     // 🪤 Honeypot anti-bot
     if (honeypot && honeypot.trim() !== "") {
@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     const chatId = process.env.TELEGRAM_CHAT_ID!;
     const message = `
 <b>📦 Nouvelle commande reçue !</b>
-
+🛎️ <b>Produit :</b> ${product} 
 👤 <b>Nom :</b> ${name}
 📞 <b>Téléphone :</b> ${phone}
 📍 <b>Wilaya :</b> ${wilaya}

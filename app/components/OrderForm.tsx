@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation"
 
 type Props = { product?: string }
 
-export default function OrderForm({ product = "Adidas Samba OG Femme" }: Props) {
+export default function OrderForm({ product }: Props) {
   const router = useRouter()
   const [form, setForm] = useState({
     name: "",
@@ -236,7 +236,7 @@ export default function OrderForm({ product = "Adidas Samba OG Femme" }: Props) 
             <option value="">Sélectionnez votre pointure</option>
             {sizes.map((size) => (
               <option key={size} value={size}>
-                {size} EU
+                {size} 
               </option>
             ))}
           </select>
