@@ -180,6 +180,9 @@ export default function OrderForm({ product = "Adidas Samba OG Femme" }: Props) 
             placeholder="0555 12 34 56"
           />
         </div>
+        <div>
+          <input type="text" name="honeypot" className="hidden" autoComplete="off" />
+        </div>
 
         <div>
           <label htmlFor="wilaya" className="block text-sm font-semibold mb-2">

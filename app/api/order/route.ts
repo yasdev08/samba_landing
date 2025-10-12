@@ -1,12 +1,33 @@
 import { NextResponse } from "next/server";
 
-// Use Node.js runtime (not edge)
 export const runtime = "nodejs";
+
+// 🧱 In-memory rate limit store (resets on cold start)
+const recentRequests = new Map<string, number>();
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for") || "unknown";
+    const now = Date.now();
+
+    // 🕒 Rate limit: 1 request per 30s per IP
+    const lastRequest = recentRequests.get(ip);
+    if (lastRequest && now - lastRequest < 30_000) {
+      return NextResponse.json(
+        { success: false, message: "Veuillez patienter avant de soumettre à nouveau." },
+        { status: 429 }
+      );
+    }
+    recentRequests.set(ip, now);
+
     const body = await req.json();
-    const { name, phone, wilaya, baladiya, pointure } = body;
+    const { name, phone, wilaya, baladiya, pointure, honeypot } = body;
+
+    // 🪤 Honeypot anti-bot
+    if (honeypot && honeypot.trim() !== "") {
+      console.warn("🚫 Spam bot detected");
+      return NextResponse.json({ success: true }); // silently accept
+    }
 
     // 🧩 Validate fields
     if (!name || !phone || !wilaya || !baladiya || !pointure) {
@@ -16,12 +37,14 @@ export async function POST(req: Request) {
       );
     }
 
- 
+    
 
-    // 🕒 Timestamp (Algerian time)
-    const timestamp = new Date().toLocaleString();
+    // 🕒 Timestamp
+    const timestamp = new Date().toLocaleString("fr-DZ", {
+      timeZone: "Africa/Algiers",
+    });
 
-    // 📩 Telegram notification
+    // 📩 Telegram
     const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN!;
     const chatId = process.env.TELEGRAM_CHAT_ID!;
     const message = `
@@ -32,48 +55,24 @@ export async function POST(req: Request) {
 📍 <b>Wilaya :</b> ${wilaya}
 🏠 <b>Baladiya :</b> ${baladiya}
 👟 <b>Pointure :</b> ${pointure}
-
 🕒 <b>${timestamp}</b>
 `;
 
-    console.log("📨 Sending Telegram message to:", chatId);
-    console.log("🪪 Bot token starts with:", telegramBotToken?.slice(0, 10));
-
-    // ✅ Send Telegram message and wait for the response
     const res = await fetch(
       `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          parse_mode: "HTML", // safer than Markdown
-        }),
+        body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "HTML" }),
       }
     );
 
     const data = await res.json();
-    console.log("🤖 Telegram API response:", data);
+    console.log("Telegram API response:", data);
 
-    if (!data.ok) {
-      console.error("❌ Telegram error:", data.description);
-      return NextResponse.json(
-        { success: false, message: "Erreur Telegram." },
-        { status: 500 }
-      );
-    }
-
-    // ✅ Return immediately when Telegram confirms success
-    return NextResponse.json({
-      success: true,
-      message: "Commande reçue avec succès ✅",
-    });
+    return NextResponse.json({ success: true, message: "Commande reçue ✅" });
   } catch (error) {
     console.error("💥 Erreur serveur:", error);
-    return NextResponse.json(
-      { success: false, message: "Erreur serveur." },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, message: "Erreur serveur." }, { status: 500 });
   }
 }
