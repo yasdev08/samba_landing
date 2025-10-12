@@ -114,7 +114,7 @@ export default function Home() {
             </div>
 
             <p className="text-lg sm:text-xl text-muted-foreground font-medium mb-8 text-pretty leading-relaxed">
-              L'icône du motorsport réinventée. Design racing low-profile avec la bande signature rose pour un style
+              L&apos;icône du motorsport réinventée. Design racing low-profile avec la bande signature rose pour un style
               rétro-moderne irrésistible.
             </p>
 
@@ -126,7 +126,7 @@ export default function Home() {
               <div className="flex flex-col gap-2">
                 <span className="text-lg text-muted-foreground line-through">8500 DZD</span>
                 <span className="px-4 py-1.5 bg-secondary text-white rounded-full text-sm font-black uppercase">
-                  -19% AUJOURD'HUI
+                  -19% AUJOURD&apos;HUI
                 </span>
               </div>
             </div>
@@ -180,7 +180,7 @@ export default function Home() {
                 </div>
                 <div>
                   <div className="font-bold text-sm">Livraison rapide</div>
-                  <div className="text-xs text-muted-foreground">Toute l'Algérie</div>
+                  <div className="text-xs text-muted-foreground">Toute l&apos;Algérie</div>
                 </div>
               </div>
             </div>
@@ -259,7 +259,7 @@ export default function Home() {
               Pourquoi la Speedcat ?
             </h2>
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
-              L'héritage du motorsport dans une sneaker lifestyle moderne
+              L&apos;héritage du motorsport dans une sneaker lifestyle moderne
             </p>
           </motion.div>
 
@@ -396,7 +396,7 @@ export default function Home() {
                     </span>
                   )}
                 </div>
-                <p className="text-foreground/90 mb-6 leading-relaxed">"{review.text}"</p>
+                <p className="text-foreground/90 mb-6 leading-relaxed">&quot;{review.text}&quot;</p>
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center font-bold text-lg text-secondary">
                     {review.name.charAt(0)}
