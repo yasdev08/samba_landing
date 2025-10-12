@@ -1,8 +1,19 @@
 import { NextResponse } from "next/server";
 
-let orders: any[] = []; // In-memory store for now (you can switch to DB later)
-
 export const runtime = "nodejs";
+
+// 🗂️ Define a type for stored orders
+type Order = {
+  name: string;
+  phone: string;
+  wilaya: string;
+  baladiya: string;
+  pointure: string;
+  timestamp: string;
+};
+
+// 🧠 In-memory order storage (temporary — resets on cold start)
+const orders: Order[] = [];
 
 export async function POST(req: Request) {
   try {
@@ -18,23 +29,31 @@ export async function POST(req: Request) {
 
     let reply = "";
 
-    if (text === "/test") {
-      reply = "✅ Le bot est en ligne et fonctionne parfaitement.";
-    } else if (text === "/stats") {
-      reply = `📊 Aujourd'hui: ${orders.length} commandes reçues.`;
-    } else if (text === "/orders") {
-      reply =
-        orders.length > 0
-          ? orders
-              .slice(-5)
-              .map(
-                (o, i) =>
-                  `${i + 1}. ${o.name} - ${o.phone} (${o.wilaya}) - ${o.pointure}`
-              )
-              .join("\n")
-          : "Aucune commande récente.";
-    } else {
-      reply = "🤖 Commandes disponibles:\n/test\n/stats\n/orders";
+    switch (text) {
+      case "/test":
+        reply = "✅ Le bot est en ligne et fonctionne parfaitement.";
+        break;
+
+      case "/stats":
+        reply = `📊 Aujourd'hui: ${orders.length} commandes reçues.`;
+        break;
+
+      case "/orders":
+        reply =
+          orders.length > 0
+            ? orders
+                .slice(-5)
+                .map(
+                  (o, i) =>
+                    `${i + 1}. ${o.name} - ${o.phone} (${o.wilaya}) - ${o.pointure}`
+                )
+                .join("\n")
+            : "Aucune commande récente.";
+        break;
+
+      default:
+        reply = "🤖 Commandes disponibles:\n/test\n/stats\n/orders";
+        break;
     }
 
     await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
