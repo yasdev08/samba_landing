@@ -45,8 +45,8 @@ export async function POST(req: Request) {
       timeZone: "Africa/Algiers",
     });
 
-     const order = await prisma.order.create({
-      data: { product,name, phone, wilaya, baladiya, pointure },
+     await prisma.order.create({
+      data: {     product: typeof product === "object" ? product.name : product,name, phone, wilaya, baladiya, pointure },
     });
     // 📩 Telegram
     const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN!;

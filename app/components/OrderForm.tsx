@@ -6,12 +6,15 @@ import { motion } from "framer-motion"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 
-type Props = { product?: string }
+interface Product {
+  name: string;
+  price: number;
+}
 
-export default function OrderForm({ product }: { product: { name: string; price: number } }){
+export default function OrderForm({ product }: { product: Product }){
   const router = useRouter()
   const [form, setForm] = useState({
-    product: product?.name,
+    product: product?.name || "",
     name: "",
     phone: "",
     wilaya: "",

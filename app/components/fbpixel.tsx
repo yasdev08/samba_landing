@@ -1,6 +1,7 @@
 "use client";
 
 import Script from "next/script";
+import Image from "next/image";
 
 export default function FacebookPixel() {
   const pixelId = 2319174311932209
