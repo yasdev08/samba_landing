@@ -19,7 +19,7 @@ model Order {
   createdAt  DateTime @default(now())
 }
 
-model PixelEvent {
+model pixelEvent {
   id           String   @id @default(cuid()) @map("_id")
   event_name   String
   event_time   Int
