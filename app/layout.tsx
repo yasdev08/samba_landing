@@ -4,6 +4,7 @@ import "./globals.css";
 import type React from "react";
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import FacebookPixel from "./components/fbpixel";
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -32,7 +33,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" className={`${geistSans.variable} ${playfair.variable}`}>
-      <body className="font-sans antialiased">{children}          <Analytics /> <SpeedInsights/></body>
+      <body className="font-sans antialiased">
+        <FacebookPixel/>
+        {children}
+        <Analytics />
+        <SpeedInsights/>
+      </body>
     </html>
   );
 }
