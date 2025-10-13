@@ -48,6 +48,20 @@ export async function POST(req: Request) {
      await prisma.order.create({
       data: {     product: typeof product === "object" ? product.name : product,name, phone, wilaya, baladiya, pointure },
     });
+
+    // 🧠 Log offline pixel event
+    await prisma.pixelEvent.create({
+      data: {
+        event_name: "Purchase",
+        event_time: Math.floor(Date.now() / 1000),
+        user_data: { phone, name },
+        custom_data: {
+          value: typeof product === "object" ? product.price : product.price,
+          currency: "DZD",
+          content_name: typeof product === "object" ? product.name : product,
+        },
+      },
+    });
     // 📩 Telegram
     const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN!;
     const chatId = process.env.TELEGRAM_CHAT_ID!;

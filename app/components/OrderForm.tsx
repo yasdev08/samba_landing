@@ -273,7 +273,7 @@ export default function OrderForm({ product }: { product: Product }){
                 <span>Envoi en cours...</span>
               </>
             ) : (
-              <span>Confirmer la commande — 5900 DZD</span>
+              <span>Confirmer la commande — <>{product.price}</> DZD</span>
             )}
           </button>
           <p className="text-xs text-gray-600 text-center mt-3">
