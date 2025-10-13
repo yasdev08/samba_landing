@@ -143,7 +143,7 @@ export default function OrderForm({ product }: { product: Product }) {
     "El Meniaa",
   ];
 
-  const sizes = ["36", "37", "38", "39", "40", "41", "42"];
+  const sizes = ["36", "37", "38", "39", "40"];
 
   if (submitted) {
     return (
@@ -190,7 +190,7 @@ export default function OrderForm({ product }: { product: Product }) {
       <div className="space-y-4 sm:space-y-6">
         <div>
           <label htmlFor="name" className="block text-sm font-semibold mb-2">
-            Nom complet *
+            Nom complet * الإسم الكامل
           </label>
           <input
             type="text"
@@ -200,13 +200,13 @@ export default function OrderForm({ product }: { product: Product }) {
             value={form.name}
             onChange={handleChange}
             className="w-full px-4 py-3 bg-white border border-tan/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-tan transition-all"
-            placeholder="Votre nom complet"
+            placeholder="الإسم الكامل"
           />
         </div>
 
         <div>
           <label htmlFor="phone" className="block text-sm font-semibold mb-2">
-            Numéro de téléphone *
+            Numéro de téléphone * رقم الهاتف
           </label>
           <input
             type="tel"
@@ -217,7 +217,7 @@ export default function OrderForm({ product }: { product: Product }) {
             value={form.phone}
             onChange={handleChange}
             className="w-full px-4 py-3 bg-white border border-tan/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-tan transition-all"
-            placeholder="0555 12 34 56"
+            placeholder="رقم الهاتف"
           />
         </div>
         <div>
@@ -231,7 +231,7 @@ export default function OrderForm({ product }: { product: Product }) {
 
         <div>
           <label htmlFor="wilaya" className="block text-sm font-semibold mb-2">
-            Wilaya *
+            Wilaya * الولاية
           </label>
           <select
             id="wilaya"
@@ -241,7 +241,7 @@ export default function OrderForm({ product }: { product: Product }) {
             onChange={handleChange}
             className="w-full px-4 py-3 bg-white border border-tan/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-tan transition-all"
           >
-            <option value="">Sélectionnez votre wilaya</option>
+            <option value="">إختر ولايتك</option>
             {wilayas.map((wilaya) => (
               <option key={wilaya} value={wilaya}>
                 {wilaya}
@@ -255,7 +255,7 @@ export default function OrderForm({ product }: { product: Product }) {
             htmlFor="baladiya"
             className="block text-sm font-semibold mb-2"
           >
-            Adresse complète *
+            Adresse complète * العنوان الكامل
           </label>
           <textarea
             id="baladiya"
@@ -265,7 +265,7 @@ export default function OrderForm({ product }: { product: Product }) {
             onChange={handleChange}
             rows={3}
             className="w-full px-4 py-3 bg-white border border-tan/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-tan transition-all resize-none"
-            placeholder="Rue, quartier, commune..."
+            placeholder=" حي ,البلدية, العنوان "
           />
         </div>
 
@@ -274,7 +274,7 @@ export default function OrderForm({ product }: { product: Product }) {
             htmlFor="pointure"
             className="block text-sm font-semibold mb-2"
           >
-            Pointure *
+            Pointure * المقاس
           </label>
           <select
             id="pointure"
@@ -284,7 +284,7 @@ export default function OrderForm({ product }: { product: Product }) {
             onChange={handleChange}
             className="w-full px-4 py-3 bg-white border border-tan/30 rounded-xl focus:outline-none focus:ring-2 focus:ring-tan transition-all"
           >
-            <option value="">Sélectionnez votre pointure</option>
+            <option value="">إختر المقاس المناسب</option>
             {sizes.map((size) => (
               <option key={size} value={size}>
                 {size}
@@ -306,13 +306,14 @@ export default function OrderForm({ product }: { product: Product }) {
               </>
             ) : (
               <span>
-                Confirmer la commande — <>{product.price}</> DZD
+                <>{product.price + 500}</> DZD
+                               -- إشتري اللآن
+
               </span>
             )}
           </button>
           <p className="text-xs text-gray-600 text-center mt-3">
-            En commandant, vous acceptez nos conditions de vente. Paiement à la
-            livraison.
+            سعر التوصيل 500 دج لكامل الولايات
           </p>
         </div>
       </div>
