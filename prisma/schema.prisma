@@ -19,13 +19,13 @@ model Order {
   createdAt  DateTime @default(now())
 }
 
-model pixelEvent {
-  id           String   @id @default(cuid()) @map("_id")
-  event_name   String
-  event_time   Int
-  user_data    Json
-  custom_data  Json
-  sent_to_meta Boolean  @default(false)
-  createdAt    DateTime @default(now())
+model PixelEvent {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  eventName   String
+  eventTime   DateTime @default(now())
+  userData    Json
+  customData  Json?
+  sent_to_meta Boolean @default(false)
+  createdAt   DateTime @default(now())
 }
 

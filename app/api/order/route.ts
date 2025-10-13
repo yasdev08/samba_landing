@@ -52,10 +52,9 @@ export async function POST(req: Request) {
     // 🧠 Log offline pixel event
     await prisma.pixelEvent.create({
       data: {
-        event_name: "Purchase",
-        event_time: Math.floor(Date.now() / 1000),
-        user_data: { phone, name },
-        custom_data: {
+        eventName: "Purchase",
+        userData: { phone, name },
+        customData: {
           value: typeof product === "object" ? product.price : product.price,
           currency: "DZD",
           content_name: typeof product === "object" ? product.name : product,

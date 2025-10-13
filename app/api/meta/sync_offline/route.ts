@@ -24,10 +24,10 @@ export async function GET() {
           body: JSON.stringify({
             data: [
               {
-                event_name: event.event_name,
-                event_time: event.event_time,
-                user_data: event.user_data,
-                custom_data: event.custom_data,
+                event_name: event.eventName,
+                event_time: event.eventTime,
+                user_data: event.userData,
+                custom_data: event.customData,
               },
             ],
           }),
