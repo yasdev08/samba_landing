@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/app/lib/prisma";
 
 export const runtime = "nodejs";
 
@@ -44,6 +45,9 @@ export async function POST(req: Request) {
       timeZone: "Africa/Algiers",
     });
 
+     const order = await prisma.order.create({
+      data: { name, phone, wilaya, baladiya, pointure },
+    });
     // 📩 Telegram
     const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN!;
     const chatId = process.env.TELEGRAM_CHAT_ID!;
