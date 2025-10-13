@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { Loader2 } from "lucide-react"
-import { useRouter } from "next/navigation"
+import type React from "react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Product {
   name: string;
@@ -17,9 +17,8 @@ declare global {
   }
 }
 
-
-export default function OrderForm({ product }: { product: Product }){
-  const router = useRouter()
+export default function OrderForm({ product }: { product: Product }) {
+  const router = useRouter();
   const [form, setForm] = useState({
     product: product?.name || "",
     name: "",
@@ -27,52 +26,61 @@ export default function OrderForm({ product }: { product: Product }){
     wilaya: "",
     baladiya: "",
     pointure: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!form.name || !form.phone || !form.wilaya || !form.baladiya || !form.pointure) {
-      alert("Veuillez remplir tous les champs.")
-      return
+    e.preventDefault();
+    if (
+      !form.name ||
+      !form.phone ||
+      !form.wilaya ||
+      !form.baladiya ||
+      !form.pointure
+    ) {
+      alert("Veuillez remplir tous les champs.");
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, product }),
-      })
+      });
 
-      const data = await res.json()
-      setIsSubmitting(false)
+      const data = await res.json();
+      setIsSubmitting(false);
 
       if (data.success) {
-        
-         if (typeof window !== "undefined" && typeof window.fbq === "function") {
-  window.fbq("track", "Purchase", {
-    value: product.price,
-    currency: "DZD",
-    content_name: product.name,
-  });
-}
-        setSubmitted(true)
-        setTimeout(() => router.push("/thank-you"), 2000)
+        if (typeof window !== "undefined" && typeof window.fbq === "function") {
+          window.fbq("track", "Purchase", {
+            value: product.price,
+            currency: "DZD",
+            content_name: product.name,
+          });
+        }
+        setSubmitted(true);
+        setTimeout(() => router.push("/thank-you"), 2000);
       } else {
-        alert("Erreur lors de l'envoi — réessayez.")
+        alert("Erreur lors de l'envoi — réessayez.");
       }
     } catch (err) {
-      setIsSubmitting(false)
-      alert("Erreur réseau — réessayez.")
-      console.error(err)
+      setIsSubmitting(false);
+      alert("Erreur réseau — réessayez.");
+      console.error(err);
     }
-  }
+  };
 
   const wilayas = [
     "Adrar",
@@ -133,9 +141,9 @@ export default function OrderForm({ product }: { product: Product }){
     "Djanet",
     "El M'Ghair",
     "El Meniaa",
-  ]
+  ];
 
-  const sizes = ["36", "37", "38", "39", "40", "41", "42"]
+  const sizes = ["36", "37", "38", "39", "40", "41", "42"];
 
   if (submitted) {
     return (
@@ -145,16 +153,29 @@ export default function OrderForm({ product }: { product: Product }){
         className="p-6 sm:p-8 bg-cream rounded-2xl border border-tan/20 text-center shadow-xl"
       >
         <div className="w-16 h-16 bg-tan/20 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg className="w-8 h-8 text-tan" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          <svg
+            className="w-8 h-8 text-tan"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 13l4 4L19 7"
+            />
           </svg>
         </div>
-        <h3 className="font-serif text-2xl font-bold mb-2">Commande Confirmée !</h3>
+        <h3 className="font-serif text-2xl font-bold mb-2">
+          Commande Confirmée !
+        </h3>
         <p className="text-gray-600">
-          Merci pour votre commande. Nous vous contacterons bientôt pour confirmer les détails de livraison.
+          Merci pour votre commande. Nous vous contacterons bientôt pour
+          confirmer les détails de livraison.
         </p>
       </motion.div>
-    )
+    );
   }
 
   return (
@@ -200,7 +221,12 @@ export default function OrderForm({ product }: { product: Product }){
           />
         </div>
         <div>
-          <input type="text" name="honeypot" className="hidden" autoComplete="off" />
+          <input
+            type="text"
+            name="honeypot"
+            className="hidden"
+            autoComplete="off"
+          />
         </div>
 
         <div>
@@ -225,7 +251,10 @@ export default function OrderForm({ product }: { product: Product }){
         </div>
 
         <div>
-          <label htmlFor="baladiya" className="block text-sm font-semibold mb-2">
+          <label
+            htmlFor="baladiya"
+            className="block text-sm font-semibold mb-2"
+          >
             Adresse complète *
           </label>
           <textarea
@@ -241,7 +270,10 @@ export default function OrderForm({ product }: { product: Product }){
         </div>
 
         <div>
-          <label htmlFor="pointure" className="block text-sm font-semibold mb-2">
+          <label
+            htmlFor="pointure"
+            className="block text-sm font-semibold mb-2"
+          >
             Pointure *
           </label>
           <select
@@ -255,7 +287,7 @@ export default function OrderForm({ product }: { product: Product }){
             <option value="">Sélectionnez votre pointure</option>
             {sizes.map((size) => (
               <option key={size} value={size}>
-                {size} 
+                {size}
               </option>
             ))}
           </select>
@@ -273,14 +305,17 @@ export default function OrderForm({ product }: { product: Product }){
                 <span>Envoi en cours...</span>
               </>
             ) : (
-              <span>Confirmer la commande — <>{product.price}</> DZD</span>
+              <span>
+                Confirmer la commande — <>{product.price}</> DZD
+              </span>
             )}
           </button>
           <p className="text-xs text-gray-600 text-center mt-3">
-            En commandant, vous acceptez nos conditions de vente. Paiement à la livraison.
+            En commandant, vous acceptez nos conditions de vente. Paiement à la
+            livraison.
           </p>
         </div>
       </div>
     </motion.form>
-  )
+  );
 }
