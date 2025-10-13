@@ -3,31 +3,35 @@ import { PrismaClient } from "@prisma/client";
 import { stringify } from "csv-stringify/sync";
 
 const prisma = new PrismaClient();
-
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   try {
-    const data = await req.json();
+    const data = await req.json().catch(() => ({}));
     const message = data?.message;
     const chatId = message?.chat?.id;
     const text: string = message?.text || "";
 
     if (!chatId || !text) {
-      return NextResponse.json({ success: false });
+      console.warn("⚠️ Missing chatId or text in Telegram update");
+      return NextResponse.json({ success: true }); // respond OK to Telegram
     }
 
     const botToken = process.env.TELEGRAM_BOT_TOKEN!;
-    const sendMessage = async (text: string) => {
-      await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text,
-          parse_mode: "Markdown",
-        }),
-      });
+    const sendMessage = async (msg: string) => {
+      try {
+        await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: msg,
+            parse_mode: "Markdown",
+          }),
+        });
+      } catch (err) {
+        console.error("❌ Telegram send error:", err);
+      }
     };
 
     // --- Commands ---
@@ -56,7 +60,7 @@ export async function POST(req: Request) {
         const list = orders
           .map(
             (o) =>
-              `#${o.id}\n👤 ${o.product} ${o.name}\n📞 ${o.phone}\n📍 ${o.wilaya} - ${o.baladiya}\n👟 ${o.pointure}\n🕒 ${o.createdAt.toLocaleString()}`
+              `#${o.id}\n🛒 ${o.product}\n👤 ${o.name}\n📞 ${o.phone}\n📍 ${o.wilaya} - ${o.baladiya}\n👟 ${o.pointure}\n🕒 ${o.createdAt.toLocaleString("fr-DZ")}`
           )
           .join("\n\n");
         await sendMessage(`📦 *5 dernières commandes:*\n\n${list}`);
@@ -67,17 +71,19 @@ export async function POST(req: Request) {
       const id = text.split(" ")[1];
       if (!id) return await sendMessage("⚠️ Utilisez: /delete <id>");
 
-      const deleted = await prisma.order.delete({ where: { id } }).catch(() => null);
-      if (deleted) await sendMessage(`🗑️ Commande *${id}* supprimée.`);
-      else await sendMessage("❌ Commande introuvable.");
+      try {
+        const deleted = await prisma.order.delete({ where: { id } });
+        if (deleted) await sendMessage(`🗑️ Commande *${id}* supprimée.`);
+      } catch {
+        await sendMessage("❌ Commande introuvable.");
+      }
     }
 
     else if (text === "/export") {
       const orders = await prisma.order.findMany({
         orderBy: { createdAt: "desc" },
       });
-      if (orders.length === 0)
-        return await sendMessage("Aucune commande à exporter.");
+      if (orders.length === 0) return await sendMessage("Aucune commande à exporter.");
 
       const csv = stringify(
         orders.map((o) => [
@@ -92,27 +98,13 @@ export async function POST(req: Request) {
         ]),
         {
           header: true,
-          columns: [
-            "ID",
-            "Produit",
-            "Nom",
-            "Téléphone",
-            "Wilaya",
-            "Baladiya",
-            "Pointure",
-            "Date",
-          ],
+          columns: ["ID", "Produit", "Nom", "Téléphone", "Wilaya", "Baladiya", "Pointure", "Date"],
         }
       );
 
-      // Telegram files upload
       const formData = new FormData();
       formData.append("chat_id", chatId.toString());
-      formData.append(
-        "document",
-        new Blob([csv], { type: "text/csv" }),
-        "commandes.csv"
-      );
+      formData.append("document", new Blob([csv], { type: "text/csv" }), "commandes.csv");
 
       await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
         method: "POST",
@@ -126,10 +118,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("💥 Erreur serveur:", err);
-    return NextResponse.json(
-      { success: false, message: "Erreur serveur." },
-      { status: 500 }
-    );
+    console.error("💥 Erreur serveur (catch global):", err);
+    // Always respond 200 to Telegram, or it retries endlessly
+    return NextResponse.json({ success: true });
   }
 }
