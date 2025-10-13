@@ -7,12 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+
 model Order {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  phone     String
-  wilaya    String
-  baladiya  String
-  pointure  String
-  timestamp DateTime @default(now())
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  product    String
+  name       String
+  phone      String
+  wilaya     String
+  baladiya   String
+  pointure   String
+  createdAt  DateTime @default(now())
 }
+

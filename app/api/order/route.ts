@@ -46,7 +46,7 @@ export async function POST(req: Request) {
     });
 
      const order = await prisma.order.create({
-      data: { name, phone, wilaya, baladiya, pointure },
+      data: { product,name, phone, wilaya, baladiya, pointure },
     });
     // 📩 Telegram
     const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN!;
