@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import { MessageCircle } from "lucide-react"
 
 export default function WhatsAppButton() {
-  const phoneNumber = "213555123456" // Replace with actual WhatsApp business number
+  const phoneNumber = "213794120959" // Replace with actual WhatsApp business number
   const message = encodeURIComponent("Bonjour, je suis intéressé(e) par la Adidas Samba OG Femme.")
 
   return (
