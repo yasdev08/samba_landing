@@ -37,18 +37,14 @@ export async function POST(req: Request) {
     // --- Commands ---
     if (text === "/test") {
       await sendMessage("✅ Le bot est en ligne !");
-    }
-
-    else if (text === "/stats") {
+    } else if (text === "/stats") {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const ordersToday = await prisma.order.count({
         where: { createdAt: { gte: today } },
       });
       await sendMessage(`📊 Commandes reçues aujourd'hui : *${ordersToday}*`);
-    }
-
-    else if (text === "/orders") {
+    } else if (text === "/orders") {
       const orders = await prisma.order.findMany({
         orderBy: { createdAt: "desc" },
         take: 5,
@@ -60,16 +56,21 @@ export async function POST(req: Request) {
         const list = orders
           .map(
             (o) =>
-              `#${o.id}\n🛒 ${o.product}\n👤 ${o.name}\n📞 ${o.phone}\n📍 ${o.wilaya} - ${o.baladiya}\n👟 ${o.pointure}\n🕒 ${o.createdAt.toLocaleString("fr-DZ")}`
+              `#${o.id}\n🛒 ${o.product}\n👤 ${o.name}\n📞 ${o.phone}\n📍 ${
+                o.wilaya
+              } - ${o.baladiya}\n👟 ${
+                o.pointure
+              }\n🕒 ${o.createdAt.toLocaleString("fr-DZ")}`
           )
           .join("\n\n");
         await sendMessage(`📦 *5 dernières commandes:*\n\n${list}`);
       }
-    }
-
-    else if (text.startsWith("/delete")) {
+    } else if (text.startsWith("/delete")) {
       const id = text.split(" ")[1];
-      if (!id) return await sendMessage("⚠️ Utilisez: /delete <id>");
+      if (!id) {
+        await sendMessage("⚠️ Utilisez: /delete <id>");
+        return NextResponse.json({ success: true });
+      }
 
       try {
         const deleted = await prisma.order.delete({ where: { id } });
@@ -77,13 +78,12 @@ export async function POST(req: Request) {
       } catch {
         await sendMessage("❌ Commande introuvable.");
       }
-    }
-
-    else if (text === "/export") {
+    } else if (text === "/export") {
       const orders = await prisma.order.findMany({
         orderBy: { createdAt: "desc" },
       });
-      if (orders.length === 0) return await sendMessage("Aucune commande à exporter.");
+      if (orders.length === 0)
+        return await sendMessage("Aucune commande à exporter.");
 
       const csv = stringify(
         orders.map((o) => [
@@ -98,22 +98,35 @@ export async function POST(req: Request) {
         ]),
         {
           header: true,
-          columns: ["ID", "Produit", "Nom", "Téléphone", "Wilaya", "Baladiya", "Pointure", "Date"],
+          columns: [
+            "ID",
+            "Produit",
+            "Nom",
+            "Téléphone",
+            "Wilaya",
+            "Baladiya",
+            "Pointure",
+            "Date",
+          ],
         }
       );
 
       const formData = new FormData();
       formData.append("chat_id", chatId.toString());
-      formData.append("document", new Blob([csv], { type: "text/csv" }), "commandes.csv");
+      formData.append(
+        "document",
+        new Blob([csv], { type: "text/csv" }),
+        "commandes.csv"
+      );
 
       await fetch(`https://api.telegram.org/bot${botToken}/sendDocument`, {
         method: "POST",
         body: formData,
       });
-    }
-
-    else {
-      await sendMessage("🤖 Commande non reconnue. Essayez /orders, /stats, /export, /delete <id>");
+    } else {
+      await sendMessage(
+        "🤖 Commande non reconnue. Essayez /orders, /stats, /export, /delete <id>"
+      );
     }
 
     return NextResponse.json({ success: true });
