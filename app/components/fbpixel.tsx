@@ -31,7 +31,9 @@ export default function FacebookPixel() {
       />
       {/* NoScript fallback */}
       <noscript>
-        <img
+        <Image
+          alt="Facebook Pixel"
+          aria-hidden="true"
           height="1"
           width="1"
           style={{ display: "none" }}

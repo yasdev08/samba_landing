@@ -22,6 +22,16 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "ViewContent", {
+        content_name: "Adidas Samba OG Femme",
+        value: 5900,
+        currency: "DZD",
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const updateCountdown = () => {
       const now = new Date()
       const midnight = new Date()

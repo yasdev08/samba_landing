@@ -28,6 +28,16 @@ export default function Home() {
   }, [])
 
   useEffect(() => {
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "ViewContent", {
+        content_name: "Puma Speedcat",
+        value: 7500,
+        currency: "DZD",
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const updateCountdown = () => {
       const now = new Date()
       const midnight = new Date()
@@ -120,7 +130,7 @@ export default function Home() {
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8 p-6 bg-card rounded-2xl border-2 border-secondary/30">
               <div className="flex items-baseline gap-3">
-                <span className="text-5xl sm:text-6xl font-black text-secondary">6900</span>
+                <span className="text-5xl sm:text-6xl font-black text-secondary">7500</span>
                 <span className="text-2xl font-bold text-muted-foreground">DZD</span>
               </div>
               <div className="flex flex-col gap-2">
@@ -431,7 +441,7 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <OrderForm product={{ name: "Puma Speedcat", price: 6900 }} />
+          <OrderForm product={{ name: "Puma Speedcat", price: 7500 }} />
 
           <motion.div
             initial={{ opacity: 0 }}
@@ -463,7 +473,7 @@ export default function Home() {
         >
           <div>
             <div className="text-xs font-bold opacity-90 uppercase">Offre limitée</div>
-            <div className="text-2xl font-black">6900 DZD</div>
+            <div className="text-2xl font-black">7500 DZD</div>
           </div>
           <div className="px-6 py-3 bg-white text-secondary rounded-xl font-black text-base uppercase">Commander</div>
         </a>

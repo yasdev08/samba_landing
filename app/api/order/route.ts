@@ -53,7 +53,7 @@ export async function POST(req: Request) {
     const chatId = process.env.TELEGRAM_CHAT_ID!;
     const message = `
 <b>📦 Nouvelle commande reçue !</b>
-🛎️ <b>Produit :</b> ${product} 
+🛎️ <b>Produit :</b> ${product.name} 
 👤 <b>Nom :</b> ${name}
 📞 <b>Téléphone :</b> ${phone}
 📍 <b>Wilaya :</b> ${wilaya}
@@ -70,6 +70,44 @@ export async function POST(req: Request) {
         body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "HTML" }),
       }
     );
+
+    const pixelId = process.env.FACEBOOK_PIXEL_ID!;
+    const accessToken = process.env.FACEBOOK_ACCESS_TOKEN!;
+    const testCode = process.env.FACEBOOK_TEST_EVENT_CODE;
+
+    const capiEvent = {
+      data: [
+        {
+          event_name: "Purchase",
+          event_time: Math.floor(Date.now() / 1000),
+          action_source: "website",
+          user_data: {
+            client_ip_address: ip,
+            client_user_agent: req.headers.get("user-agent"),
+            ph: phone.replace(/\D/g, ""), // hash phone if you want
+          },
+          custom_data: {
+            currency: "DZD",
+            value: typeof product === "object" ? product.price : product.price,
+            content_name: typeof product === "string" ? product : product.name,
+          },
+          event_source_url: req.headers.get("referer") || "https://samba-landing.vercel.app",
+          ...(testCode ? { test_event_code: testCode } : {}),
+        },
+      ],
+    };
+
+    const capiRes = await fetch(
+      `https://graph.facebook.com/v20.0/${pixelId}/events?access_token=${accessToken}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(capiEvent),
+      }
+    );
+
+    const capiData = await capiRes.json();
+    console.log("📡 CAPI response:", capiData);
 
     const data = await res.json();
     console.log("Telegram API response:", data);
