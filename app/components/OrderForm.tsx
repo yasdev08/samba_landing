@@ -11,6 +11,13 @@ interface Product {
   price: number;
 }
 
+declare global {
+  interface Window {
+    fbq?: (...args: unknown[]) => void;
+  }
+}
+
+
 export default function OrderForm({ product }: { product: Product }){
   const router = useRouter()
   const [form, setForm] = useState({
@@ -48,13 +55,13 @@ export default function OrderForm({ product }: { product: Product }){
 
       if (data.success) {
         
-         if (typeof window !== "undefined" && (window as any).fbq) {
-        (window as any).fbq("track", "Purchase", {
-          value: product.price,
-          currency: "DZD",
-          content_name: product.name,
-        });
-      }
+         if (typeof window !== "undefined" && typeof window.fbq === "function") {
+  window.fbq("track", "Purchase", {
+    value: product.price,
+    currency: "DZD",
+    content_name: product.name,
+  });
+}
         setSubmitted(true)
         setTimeout(() => router.push("/thank-you"), 2000)
       } else {
