@@ -416,7 +416,7 @@ export default function Home() {
             </div>
           </motion.div>
 
-          <OrderForm product="Adidas samba OG femme"/>
+          <OrderForm product={{ name: "Adidas Samba OG Femme", price: 5900 }}/>
 
           <motion.div
             initial={{ opacity: 0 }}

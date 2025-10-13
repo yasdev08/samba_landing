@@ -8,9 +8,10 @@ import { useRouter } from "next/navigation"
 
 type Props = { product?: string }
 
-export default function OrderForm({ product }: Props) {
+export default function OrderForm({ product }: { product: { name: string; price: number } }){
   const router = useRouter()
   const [form, setForm] = useState({
+    product: product?.name,
     name: "",
     phone: "",
     wilaya: "",
@@ -43,6 +44,14 @@ export default function OrderForm({ product }: Props) {
       setIsSubmitting(false)
 
       if (data.success) {
+        
+         if (typeof window !== "undefined" && (window as any).fbq) {
+        (window as any).fbq("track", "Purchase", {
+          value: product.price,
+          currency: "DZD",
+          content_name: product.name,
+        });
+      }
         setSubmitted(true)
         setTimeout(() => router.push("/thank-you"), 2000)
       } else {
