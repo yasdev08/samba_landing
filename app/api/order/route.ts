@@ -12,7 +12,7 @@ const hash = (value: string) =>
 const recentRequests = new Map<string, number>();
 
 export async function POST(req: Request) {
-const eventId = crypto.randomUUID();
+/* const eventId = crypto.randomUUID(); */
   try {
     // Get client IP safely in Next.js App Router
     const xForwardedFor = req.headers.get("x-forwarded-for");

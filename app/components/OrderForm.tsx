@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import MetaPixelCookies from "./MetaCookies";
+import { Suspense } from "react";
 
 interface Product {
   name: string;
@@ -18,20 +20,7 @@ declare global {
   }
 }
 
-export function useMetaCookies() {
-  const searchParams = useSearchParams();
 
-  useEffect(() => {
-    // Capture fbclid from URL (for _fbc)
-    const fbclid = searchParams.get("fbclid");
-    if (fbclid) {
-      document.cookie = `_fbc=${fbclid}; path=/; max-age=${60 * 60 * 24 * 90}`; // 90 days
-    }
-
-    // _fbp is already set by Meta Pixel, so just leave it
-    // We'll read it from the cookie when sending data to the server
-  }, [searchParams]);
-}
 
 export default function OrderForm({ product }: { product: Product }) {
   const router = useRouter();
@@ -56,7 +45,9 @@ export default function OrderForm({ product }: { product: Product }) {
     }
   }, [searchParams]); */
 
-  useMetaCookies();
+  <Suspense fallback={null}>
+        <MetaPixelCookies />
+  </Suspense>
 
   const handleChange = (
     e: React.ChangeEvent<
