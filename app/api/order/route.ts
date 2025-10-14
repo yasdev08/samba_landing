@@ -4,7 +4,7 @@ import crypto from "crypto";
 
 export const runtime = "nodejs";
 
-const eventId = crypto.randomUUID();
+
 // SHA256 hash function
 const hash = (value: string) =>
   crypto.createHash("sha256").update(value.trim().toLowerCase()).digest("hex");
@@ -13,6 +13,7 @@ const hash = (value: string) =>
 const recentRequests = new Map<string, number>();
 
 export async function POST(req: Request) {
+const eventId = crypto.randomUUID();
   try {
     const ip = req.headers.get("x-forwarded-for") || "unknown";
     const now = Date.now();
