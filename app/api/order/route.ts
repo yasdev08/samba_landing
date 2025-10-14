@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import crypto from "crypto";
+import { timeStamp } from "console";
 
 export const runtime = "nodejs";
 
@@ -20,14 +21,29 @@ export async function POST(req: Request) {
     const lastRequest = recentRequests.get(ip);
     if (lastRequest && now - lastRequest < 30_000) {
       return NextResponse.json(
-        { success: false, message: "Veuillez patienter avant de soumettre à nouveau." },
+        {
+          success: false,
+          message: "Veuillez patienter avant de soumettre à nouveau.",
+        },
         { status: 429 }
       );
     }
     recentRequests.set(ip, now);
+    const timeStamp = new Date().toLocaleString("fr-FR", {
+      timeZone: "Africa/Algiers",
+    });
 
     const body = await req.json();
-    const { product, name, phone, wilaya, baladiya, pointure, honeypot, eventId } = body;
+    const {
+      product,
+      name,
+      phone,
+      wilaya,
+      baladiya,
+      pointure,
+      honeypot,
+      eventId,
+    } = body;
 
     // Honeypot anti-bot
     if (honeypot && honeypot.trim() !== "") {
@@ -37,7 +53,10 @@ export async function POST(req: Request) {
 
     // Validate fields
     if (!name || !phone || !wilaya || !baladiya || !pointure || !eventId) {
-      return NextResponse.json({ success: false, message: "Champs manquants." }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: "Champs manquants." },
+        { status: 400 }
+      );
     }
 
     // Save order in MongoDB
@@ -76,6 +95,28 @@ export async function POST(req: Request) {
       },
     });
 
+    const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN!;
+    const chatId = process.env.TELEGRAM_CHAT_ID!;
+    const res = await fetch(
+      `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: `<b>📦 Nouvelle commande reçue !</b>
+🛎️ <b>Produit :</b> ${product.name} 
+👤 <b>Nom :</b> ${name}
+📞 <b>Téléphone :</b> ${phone}
+📍 <b>Wilaya :</b> ${wilaya}
+🏠 <b>Baladiya :</b> ${baladiya}
+👟 <b>Pointure :</b> ${pointure}
+🕒 <b>${timeStamp}</b>`,
+          parse_mode: "HTML",
+        }),
+      }
+    );
+
     // Send event to Meta CAPI
     const pixelId = process.env.FACEBOOK_PIXEL_ID!;
     const accessToken = process.env.FACEBOOK_ACCESS_TOKEN!;
@@ -107,10 +148,14 @@ export async function POST(req: Request) {
 
     const capiData = await capiRes.json();
     console.log("📡 CAPI response:", capiData);
-
+    const data = await res.json();
+    console.log("Telegram API response:", data);
     return NextResponse.json({ success: true, message: "Commande reçue ✅" });
   } catch (error) {
     console.error("💥 Erreur serveur:", error);
-    return NextResponse.json({ success: false, message: "Erreur serveur." }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: "Erreur serveur." },
+      { status: 500 }
+    );
   }
 }
