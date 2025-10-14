@@ -34,13 +34,31 @@ interface Review {
   location: string;
 }
 
-const images = [
+const Galimages = [
+  
   "/puma1.webp",
   "/puma2.webp",
+  
   "/puma3.webp",
   "/puma4.webp",
   "/puma5.webp",
+  "/puma6.jpg",
+  
+  
+  
 ];
+
+const images = [
+  "/puma9.jpg",
+  "/puma10.jpg",
+  "/puma12.jpg",
+  "/puma11.jpg",
+  "/puma13.jpg",
+  "/puma7.jpg",
+  "/puma8.jpg",
+  "/puma15.jpg"
+];
+
 
 /** Small memoized UI pieces to avoid re-rendering */
 const ReviewCard = React.memo(function ReviewCard({
@@ -86,7 +104,7 @@ const GalleryItem = React.memo(function GalleryItem({
   i: number;
 }) {
   return (
-    <div className="relative aspect-square rounded-2xl overflow-hidden shadow-md cursor-pointer border-2 border-border hover:border-secondary transition-all bg-card">
+    <div className="relative aspect-square rounded-4xl overflow-hidden shadow-md cursor-pointer border-2 border-border hover:border-secondary transition-all bg-card">
       <Image
         src={src}
         alt={`Style ${i + 1}`}
@@ -100,7 +118,7 @@ const GalleryItem = React.memo(function GalleryItem({
 
 export default function Home() {
   const [current, setCurrent] = useState<number>(0);
-  const [countdown, setCountdown] = useState<number>(0);
+  /* const [countdown, setCountdown] = useState<number>(0); */
   const slideIntervalRef = useRef<number | null>(null);
 
   // Respect user preference for reduced motion
@@ -157,7 +175,7 @@ export default function Home() {
   }, []);
 
   // Countdown to midnight, update once per second
-  useEffect(() => {
+ /*  useEffect(() => {
     const update = () => {
       const now = Date.now();
       const midnight = new Date();
@@ -177,7 +195,7 @@ export default function Home() {
     return `${h.toString().padStart(2, "0")}:${m
       .toString()
       .padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
-  };
+  }; */
 
   const features = useMemo(
     () => [
@@ -338,7 +356,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/20 border border-secondary rounded-full text-xs sm:text-sm font-bold mb-6">
               <Clock className="w-4 h-4 text-secondary flex-shrink-0" />
               <span className="text-secondary">
-                OFFRE LIMITÉE — {formatCountdown(countdown)}
+                OFFRE LIMITÉE — صالح ليوم فقط 
               </span>
             </div>
 
@@ -402,7 +420,7 @@ export default function Home() {
                   </p>
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/20 border border-secondary rounded-full text-sm font-bold text-secondary uppercase">
                     <Clock className="w-4 h-4 flex-shrink-0" />
-                    <span>سينتهي العرض خلال  {formatCountdown(countdown)}</span>
+                    <span>العرض صالح لليوم فقط</span>
                   </div>
                 </div>
 
@@ -430,7 +448,7 @@ export default function Home() {
               </div>
             </section>
 
-            <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-6 pt-6 border-t border-border">
+            {/* <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-6 pt-6 border-t border-border">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
                   <Shield className="w-6 h-6 text-secondary" />
@@ -453,7 +471,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -517,8 +535,8 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {images
-            .concat(images)
+          {Galimages
+            .concat(Galimages)
             .slice(0, 6)
             .map((src, i) => (
               <GalleryItem key={i} src={src} i={i} />
@@ -562,6 +580,16 @@ export default function Home() {
           aria-label="Commander maintenant"
         >
           Commander Maintenant
+        </a>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-4 mb-8">
+        <a
+          href="tel:+213794120959"
+          className="px-8 py-4 bg-green-500 text-white rounded-xl font-black text-lg text-center hover:bg-secondary/90 transition-colors shadow-lg uppercase tracking-wide"
+          aria-label="Appeler"
+        >
+         Appeler Nous ! 📱
         </a>
       </div>
 

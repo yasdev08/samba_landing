@@ -306,7 +306,7 @@ export default function OrderForm({ product }: { product: Product }) {
               </>
             ) : (
               <span>
-                <>{product.price + 500}</> DZD
+                <>{product.price }</> DZD
                                -- إشتري اللآن
 
               </span>
