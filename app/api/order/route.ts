@@ -5,12 +5,6 @@ import crypto from "crypto";
 
 export const runtime = "nodejs";
 
-<<<<<<< HEAD
-// SHA256 hash helper
-=======
-
-// SHA256 hash function
->>>>>>> a526522a6374f1be4fb564790ce4d8d8dd3841c8
 const hash = (value: string) =>
   crypto.createHash("sha256").update(value.trim().toLowerCase()).digest("hex");
 
