@@ -219,7 +219,7 @@ export default function Home() {
       {
         name: "Nadia K.",
         location: "Oran",
-        text: "Parfaites pour mon style streetwear. Le daim est de très haute qualité et elles sont super confortables. La livraison a été rapide et le produit est 100% authentique.",
+        text: "Parfaites pour mon style streetwear. Le daim est de très haute qualité et elles sont super confortables. La livraison a été rapide et le produit est Super!.",
         rating: 5,
         verified: true,
       },
@@ -278,10 +278,10 @@ export default function Home() {
             <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-secondary flex-shrink-0" />
             <span className="font-bold">+800 paires vendues</span>
           </div>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <Award className="w-4 h-4 sm:w-5 sm:h-5 text-secondary flex-shrink-0" />
             <span className="font-bold">100% Authentique</span>
-          </div>
+          </div> */}
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-secondary flex-shrink-0" />
             <span className="font-bold">Livraison Express</span>
@@ -430,7 +430,7 @@ export default function Home() {
                   {[
                     { icon: Shield, text: "Paiement sécurisé" },
                     { icon: Truck, text: "Livraison rapide" },
-                    { icon: Check, text: "100% Authentique" },
+                    { icon: Check, text: "Satisfait ou remboursé" },
                   ].map((badge, i) => (
                     <div
                       key={i}
@@ -617,10 +617,10 @@ export default function Home() {
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div className="sm:col-span-2">
               <div className="font-black text-3xl mb-4 uppercase tracking-wider">
-                PUMA
+                CHAUSSURA
               </div>
               <p className="text-muted-foreground leading-relaxed mb-6">
-                Sneakers authentiques Puma en Algérie. Livraison rapide et
+                Sneakers Puma en Algérie. Livraison rapide et
                 paiement sécurisé dans les 58 wilayas.
               </p>
             </div>
@@ -636,7 +636,7 @@ export default function Home() {
             <div>
               <h4 className="font-bold text-lg mb-4 uppercase">Garanties</h4>
               <ul className="space-y-3 text-sm text-muted-foreground">
-                <li>100% authentique</li>
+                {/* <li>100% authentique</li> */}
                 <li>Satisfait ou remboursé</li>
                 <li>Support 7j/7</li>
                 <li>Échange gratuit</li>
@@ -644,7 +644,7 @@ export default function Home() {
             </div>
           </div>
           <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
-            <p>&copy; 2025 Puma Algeria. Tous droits réservés.</p>
+            <p>&copy; 2025 Chaussura Algeria. Tous droits réservés.</p>
           </div>
         </div>
       </footer>
