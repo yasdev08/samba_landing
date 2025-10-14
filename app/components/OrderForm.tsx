@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import MetaPixelCookies from "./MetaCookies";
-import { Suspense } from "react";
+
 
 interface Product {
   name: string;
@@ -45,9 +44,17 @@ export default function OrderForm({ product }: { product: Product }) {
     }
   }, [searchParams]); */
 
-  <Suspense fallback={null}>
-        <MetaPixelCookies />
-  </Suspense>
+  function MetaPixelCookies() {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const fbclid = params.get("fbclid");
+    if (fbclid) {
+      document.cookie = `_fbc=${fbclid}; path=/; max-age=${60 * 60 * 24 * 90}`;
+    }
+  }, []);
+
+  return null;
+}
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -218,7 +225,8 @@ export default function OrderForm({ product }: { product: Product }) {
     );
   }
 
-  return (
+  return (<>
+    <MetaPixelCookies />
     <motion.form
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -355,5 +363,6 @@ export default function OrderForm({ product }: { product: Product }) {
         </div>
       </div>
     </motion.form>
+    </>
   );
 }
