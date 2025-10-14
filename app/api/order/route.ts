@@ -1,9 +1,14 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
+import crypto from "crypto";
 
 export const runtime = "nodejs";
 
-// 🧱 In-memory rate limit store (resets on cold start)
+// SHA256 hash function
+const hash = (value: string) =>
+  crypto.createHash("sha256").update(value.trim().toLowerCase()).digest("hex");
+
+// In-memory rate limiter (resets on cold start)
 const recentRequests = new Map<string, number>();
 
 export async function POST(req: Request) {
@@ -11,7 +16,7 @@ export async function POST(req: Request) {
     const ip = req.headers.get("x-forwarded-for") || "unknown";
     const now = Date.now();
 
-    // 🕒 Rate limit: 1 request per 30s per IP
+    // Rate limit: 1 request per 30s per IP
     const lastRequest = recentRequests.get(ip);
     if (lastRequest && now - lastRequest < 30_000) {
       return NextResponse.json(
@@ -22,90 +27,71 @@ export async function POST(req: Request) {
     recentRequests.set(ip, now);
 
     const body = await req.json();
-    const {product, name, phone, wilaya, baladiya, pointure, honeypot } = body;
+    const { product, name, phone, wilaya, baladiya, pointure, honeypot, eventId } = body;
 
-    // 🪤 Honeypot anti-bot
+    // Honeypot anti-bot
     if (honeypot && honeypot.trim() !== "") {
       console.warn("🚫 Spam bot detected");
       return NextResponse.json({ success: true }); // silently accept
     }
 
-    // 🧩 Validate fields
-    if (!name || !phone || !wilaya || !baladiya || !pointure) {
-      return NextResponse.json(
-        { success: false, message: "Champs manquants." },
-        { status: 400 }
-      );
+    // Validate fields
+    if (!name || !phone || !wilaya || !baladiya || !pointure || !eventId) {
+      return NextResponse.json({ success: false, message: "Champs manquants." }, { status: 400 });
     }
 
-    
-
-    // 🕒 Timestamp
-    const timestamp = new Date().toLocaleString("fr-DZ", {
-      timeZone: "Africa/Algiers",
+    // Save order in MongoDB
+    await prisma.order.create({
+      data: {
+        product: typeof product === "object" ? product.name : product,
+        name,
+        phone,
+        wilaya,
+        baladiya,
+        pointure,
+      },
     });
 
-     await prisma.order.create({
-      data: {     product: typeof product === "object" ? product.name : product,name, phone, wilaya, baladiya, pointure },
-    });
+    // Prepare hashed user data for Meta CAPI
+    const hashedUserData = {
+      ph: hash(phone.replace(/\D/g, "")),
+      fn: hash(name.split(" ")[0] || ""),
+      ln: hash(name.split(" ").slice(1).join(" ") || ""),
+      client_ip_address: ip,
+      client_user_agent: req.headers.get("user-agent"),
+    };
 
-    // 🧠 Log offline pixel event
+    // Log offline pixel event in MongoDB
     await prisma.pixelEvent.create({
       data: {
+        eventId,
         eventName: "Purchase",
-        userData: { phone, name },
+        eventTime: new Date(),
+        userData: hashedUserData,
         customData: {
-          value: typeof product === "object" ? product.price : product.price,
+          product,
+          value: product.price,
           currency: "DZD",
-          content_name: typeof product === "object" ? product.name : product,
         },
       },
     });
-    // 📩 Telegram
-    const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN!;
-    const chatId = process.env.TELEGRAM_CHAT_ID!;
-    const message = `
-<b>📦 Nouvelle commande reçue !</b>
-🛎️ <b>Produit :</b> ${product.name} 
-👤 <b>Nom :</b> ${name}
-📞 <b>Téléphone :</b> ${phone}
-📍 <b>Wilaya :</b> ${wilaya}
-🏠 <b>Baladiya :</b> ${baladiya}
-👟 <b>Pointure :</b> ${pointure}
-🕒 <b>${timestamp}</b>
-`;
 
-    const res = await fetch(
-      `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ chat_id: chatId, text: message, parse_mode: "HTML" }),
-      }
-    );
-
+    // Send event to Meta CAPI
     const pixelId = process.env.FACEBOOK_PIXEL_ID!;
     const accessToken = process.env.FACEBOOK_ACCESS_TOKEN!;
-    const testCode = process.env.FACEBOOK_TEST_EVENT_CODE;
-
     const capiEvent = {
       data: [
         {
           event_name: "Purchase",
           event_time: Math.floor(Date.now() / 1000),
           action_source: "website",
-          user_data: {
-            client_ip_address: ip,
-            client_user_agent: req.headers.get("user-agent"),
-            ph: phone.replace(/\D/g, ""), // hash phone if you want
-          },
+          event_id: eventId, // Deduplication ID must match browser-side fbq
+          user_data: hashedUserData,
           custom_data: {
             currency: "DZD",
-            value: typeof product === "object" ? product.price : product.price,
-            content_name: typeof product === "string" ? product : product.name,
+            value: product.price,
+            content_name: product.name,
           },
-          event_source_url: req.headers.get("referer") || "https://samba-landing.vercel.app",
-          ...(testCode ? { test_event_code: testCode } : {}),
         },
       ],
     };
@@ -121,9 +107,6 @@ export async function POST(req: Request) {
 
     const capiData = await capiRes.json();
     console.log("📡 CAPI response:", capiData);
-
-    const data = await res.json();
-    console.log("Telegram API response:", data);
 
     return NextResponse.json({ success: true, message: "Commande reçue ✅" });
   } catch (error) {

@@ -21,6 +21,7 @@ model Order {
 
 model PixelEvent {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  eventId      String?
   eventName   String
   eventTime   DateTime @default(now())
   userData    Json
