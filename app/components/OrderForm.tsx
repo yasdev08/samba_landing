@@ -11,10 +11,6 @@ interface Product {
 }
 
 // Browser-safe UUID generator
-const generateEventId = (): string =>
-  typeof crypto !== "undefined" && crypto.randomUUID
-    ? crypto.randomUUID()
-    : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 
 declare global {
   interface Window {
@@ -67,13 +63,12 @@ export default function OrderForm({ product }: { product: Product }) {
 
     setIsSubmitting(true);
 
-    const eventId = generateEventId(); // Unique per submission
 
     try {
       const res = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, product, eventId }),
+        body: JSON.stringify({ ...form, product }),
       });
 
       const data = await res.json();
@@ -86,7 +81,7 @@ export default function OrderForm({ product }: { product: Product }) {
             value: product.price,
             currency: "DZD",
             content_name: product.name,
-            eventID: eventId, // matches server-side
+            eventID: data.eventId, // matches server-side
           });
         }
 

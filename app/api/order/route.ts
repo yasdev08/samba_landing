@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/app/lib/prisma";
 import crypto from "crypto";
-import { timeStamp } from "console";
 
 export const runtime = "nodejs";
 
+const eventId = crypto.randomUUID();
 // SHA256 hash function
 const hash = (value: string) =>
   crypto.createHash("sha256").update(value.trim().toLowerCase()).digest("hex");
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
     }
 
     // Validate fields
-    if (!name || !phone || !wilaya || !baladiya || !pointure || !eventId) {
+    if (!name || !phone || !wilaya || !baladiya || !pointure) {
       return NextResponse.json(
         { success: false, message: "Champs manquants." },
         { status: 400 }
@@ -150,7 +150,11 @@ export async function POST(req: Request) {
     console.log("📡 CAPI response:", capiData);
     const data = await res.json();
     console.log("Telegram API response:", data);
-    return NextResponse.json({ success: true, message: "Commande reçue ✅" });
+    return NextResponse.json({
+      success: true,
+      eventId,
+      message: "Commande reçue ✅",
+    });
   } catch (error) {
     console.error("💥 Erreur serveur:", error);
     return NextResponse.json(
