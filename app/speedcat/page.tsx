@@ -165,7 +165,11 @@ export default function Home() {
         // run after initial render only
         window.fbq("track", "ViewContent", {
           content_name: "Puma Speedcat",
+<<<<<<< HEAD
           value: 6900,
+=======
+          value: 7400,
+>>>>>>> c089058cdc6c7a05bc2dbc11ae9d1aba6e59fc27
           currency: "DZD",
         });
       }
@@ -379,7 +383,11 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8 p-6 bg-card rounded-2xl border-2 border-secondary/30">
               <div className="flex items-baseline gap-3">
                 <span className="text-5xl sm:text-6xl font-black text-secondary">
+<<<<<<< HEAD
                   6900
+=======
+                  7400
+>>>>>>> c089058cdc6c7a05bc2dbc11ae9d1aba6e59fc27
                 </span>
                 <span className="text-2xl font-bold text-muted-foreground">
                   DZD
@@ -387,7 +395,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col gap-2">
                 <span className="text-lg text-muted-foreground line-through">
-                  9900 DZD
+                  8900 DZD
                 </span>
                 <span className="px-4 py-1.5 bg-secondary text-white rounded-full text-sm font-black uppercase">
                   -19% AUJOURD&apos;HUI
@@ -424,7 +432,11 @@ export default function Home() {
                   </div>
                 </div>
 
+<<<<<<< HEAD
                 <OrderForm product={{ name: "Puma Speedcat", price: 6900 }} />
+=======
+                <OrderForm product={{ name: "Puma Speedcat", price: 7400 }} />
+>>>>>>> c089058cdc6c7a05bc2dbc11ae9d1aba6e59fc27
 
                 <div className="grid grid-cols-3 gap-4 mt-12 pt-8 border-t border-border">
                   {[
@@ -603,7 +615,11 @@ export default function Home() {
             <div className="text-xs font-bold opacity-90 uppercase">
               Offre limitée
             </div>
+<<<<<<< HEAD
             <div className="text-2xl font-black">6900 DZD</div>
+=======
+            <div className="text-2xl font-black">7400 DZD</div>
+>>>>>>> c089058cdc6c7a05bc2dbc11ae9d1aba6e59fc27
           </div>
           <div className="px-6 py-3 bg-white text-secondary rounded-xl font-black text-base uppercase">
             Commander
