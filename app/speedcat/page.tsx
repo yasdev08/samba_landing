@@ -387,7 +387,7 @@ export default function Home() {
               </div>
               <div className="flex flex-col gap-2">
                 <span className="text-lg text-muted-foreground line-through">
-                  9900 DZD
+                  7900 DZD
                 </span>
                 <span className="px-4 py-1.5 bg-secondary text-white rounded-full text-sm font-black uppercase">
                   -19% AUJOURD&apos;HUI
