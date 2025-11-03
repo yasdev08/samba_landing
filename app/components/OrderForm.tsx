@@ -125,7 +125,7 @@ export default function OrderForm({ product }: { product: Product }) {
     "El Meniaa",
   ];
 
-  const sizes = ["36", "37", "38", "39", "40"];
+  const sizes = ["36", "37"/* , "38", "39", "40" */];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

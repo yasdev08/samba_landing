@@ -354,9 +354,9 @@ export default function Home() {
           </div>
           <div>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/20 border border-secondary rounded-full text-xs sm:text-sm font-bold mb-6">
-              <Clock className="w-4 h-4 text-secondary flex-shrink-0" />
+              {/* <Clock className="w-4 h-4 text-secondary flex-shrink-0" /> */}
               <span className="text-secondary">
-                OFFRE LIMITÉE — صالح ليوم فقط 
+                🔥 Dernières paires restantes 🔥
               </span>
             </div>
 
@@ -420,7 +420,7 @@ export default function Home() {
                   </p>
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/20 border border-secondary rounded-full text-sm font-bold text-secondary uppercase">
                     <Clock className="w-4 h-4 flex-shrink-0" />
-                    <span>العرض صالح لليوم فقط</span>
+                    <span>🔥آخر المقاسات متبقية🔥  </span>
                   </div>
                 </div>
 
