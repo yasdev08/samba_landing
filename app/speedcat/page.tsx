@@ -10,6 +10,7 @@ import {
   Clock,
   Star,
   Zap,
+  FlagTriangleLeft,
   /* Award, */
   TrendingUp,
 } from "lucide-react";
@@ -286,6 +287,11 @@ export default function Home() {
             <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-secondary flex-shrink-0" />
             <span className="font-bold">Livraison Express</span>
           </div>
+
+          <div className="flex items-center gap-2">
+            {/* <FlagTriangleLeft className="w-4 h-4 sm:w-5 sm:h-5 text-secondary flex-shrink-0" /> */}
+            <span className="font-bold">🚨 3 Paires restantes 🚨</span>
+          </div>
         </div>
       </section>
 
@@ -390,7 +396,7 @@ export default function Home() {
                   7900 DZD
                 </span>
                 <span className="px-4 py-1.5 bg-secondary text-white rounded-full text-sm font-black uppercase">
-                  -19% AUJOURD&apos;HUI
+                  -15% AUJOURD&apos;HUI
                 </span>
               </div>
             </div>
